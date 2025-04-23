@@ -2,14 +2,8 @@
 
 use App\Models\Listing;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ListingController;
 
-Route::get('listings', function () {
-$listings=Listing::all();
-    return view('welcome',["listings"=>$listings]);
-});
+Route::get('/', [ListingController::class,"index"]);
 
-Route::get('listings/{listing}', function (Listing $listing) {
-    
-    
-        return view('list',["listing"=>$listing]);
-    });
+Route::get('listings/{listing}', [ListingController::class,"show"]);
