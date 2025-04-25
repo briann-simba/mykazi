@@ -69,10 +69,11 @@ public function update(Request $request, Listing $listing){
         if ($listing->logo && Storage::disk('public')->exists($listing->logo)){
 Storage::disk('public')->delete( $listing->logo );
         }
+        $formFields['logo']=asset("storage/". $request->file('logo')->store('logos','public'));
     }
 
-    $formFields['logo']=asset("storage/". $request->file('logo')->store('logos','public'));
+    
 $listing->update($formFields);
-return back()->with('message','Listing Updated Successfully!');
+return redirect()->route("listings.show",$listing->id)->with('message','Listing Updated Successfully!');
 }
 }
