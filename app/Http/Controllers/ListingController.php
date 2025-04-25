@@ -6,13 +6,14 @@ use App\Models\Listing;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Storage;
 
 class ListingController extends Controller
 {
 //Show all listings
     public function index(){
-        //dd(request("tag"));
-        $listings=Listing::latest()->filter(request(["tag","search"]))->get();
+        //dd(Listing::latest()->filter(request(["tag","search"]))->paginate(4));
+        $listings=Listing::latest()->filter(request(["tag","search"]))->paginate(4);
         return view('listings.index',["listings"=>$listings]);
     }
 //Show single listing
@@ -26,6 +27,8 @@ class ListingController extends Controller
     }
 
     public function store(Request $request){
+        // dd($request->file('logo'));
+      
         $formFields=$request->validate([
             "title"=>'required',
             "company"=>["required",Rule::unique("listings","company")],
@@ -35,10 +38,41 @@ class ListingController extends Controller
             "tags"=>"required",
             "description"=> "required"
         ]);
-
+        if ($request->hasFile('logo')){
+            $formFields['logo']=asset("storage/". $request->file('logo')->store('logos','public'));
+        }
         Listing::create($formFields);
 
         return redirect("/")
         ->with('message','Listing created successfully!');
     }
+
+//show Edit Form
+    public function edit(Listing $listing){
+        return view ('listings.edit',["listing"=>$listing]);
+    }
+
+ //Actually Update Listing
+public function update(Request $request, Listing $listing){
+    $formFields=$request->validate([
+        "title"=>'required',
+        "company"=>["required"],
+        "location"=>"required",
+        "email" => ["required","email"],
+        "website"=>"required",
+        "tags"=>"required",
+        "description"=> "required"
+    ]);
+
+    if ($request->hasFile('logo')){
+
+        if ($listing->logo && Storage::disk('public')->exists($listing->logo)){
+Storage::disk('public')->delete( $listing->logo );
+        }
+    }
+
+    $formFields['logo']=asset("storage/". $request->file('logo')->store('logos','public'));
+$listing->update($formFields);
+return back()->with('message','Listing Updated Successfully!');
+}
 }
