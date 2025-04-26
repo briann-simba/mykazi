@@ -116,7 +116,7 @@
                 Company Logo
             </label>
             @if ($listing->logo)
-            <img src={{ $listing->logo }} alt="Current Logo" width="100">
+            <img src="{{asset('storage/'. $listing->logo) }}" alt="Current Logo" width="100">
             @endif
             <input
                 type="file"

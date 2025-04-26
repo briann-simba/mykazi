@@ -39,7 +39,7 @@ class ListingController extends Controller
             "description"=> "required"
         ]);
         if ($request->hasFile('logo')){
-            $formFields['logo']=asset("storage/". $request->file('logo')->store('logos','public'));
+            $formFields['logo']=$request->file('logo')->store('logos','public');
         }
         Listing::create($formFields);
 
@@ -69,11 +69,18 @@ public function update(Request $request, Listing $listing){
         if ($listing->logo && Storage::disk('public')->exists($listing->logo)){
 Storage::disk('public')->delete( $listing->logo );
         }
-        $formFields['logo']=asset("storage/". $request->file('logo')->store('logos','public'));
+        $formFields['logo']=$request->file('logo')->store('logos','public');
     }
 
     
 $listing->update($formFields);
 return redirect()->route("listings.show",$listing->id)->with('message','Listing Updated Successfully!');
+}
+public function destroy(Listing $listing){
+    if ($listing->logo && Storage::disk('public')->exists($listing->logo)){
+        Storage::disk('public')->delete( $listing->logo );
+                }
+                $listing->delete();
+                return redirect()->route('listings.index')->with('message','Listing deleted successfully!');
 }
 }

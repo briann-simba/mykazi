@@ -4,10 +4,13 @@ use App\Models\Listing;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ListingController;
 //show all listings
-Route::get('/', [ListingController::class,"index"]);
+Route::get('/', [ListingController::class,"index"])->name("listings.index");
 
 //Actually Update Listing
 Route::put("/listings/{listing}", [ListingController::class,"update"]);
+
+//Delete a listing
+Route::delete("/listings/{listing}", [ListingController::class,"destroy"]);
 
 //show create listing form
 Route::get('/listings/create', [ListingController::class,"create"]);
