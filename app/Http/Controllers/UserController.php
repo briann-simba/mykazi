@@ -22,6 +22,7 @@ return view('users.register');
 "password"=>["required","min:6","confirmed"],
 
         ]);
+    $formFields["password"]=bcrypt($formFields["password"]);
     User::create($formFields);
     return redirect ("/")->with("message","User created successfully");
     }
