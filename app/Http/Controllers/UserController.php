@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -23,7 +24,10 @@ return view('users.register');
 
         ]);
     $formFields["password"]=bcrypt($formFields["password"]);
-    User::create($formFields);
+    $user="";
+    $user=User::create($formFields);
+  
+    Auth::login($user);
     return redirect ("/")->with("message","User created successfully");
     }
 }

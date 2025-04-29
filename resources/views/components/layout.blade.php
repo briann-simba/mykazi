@@ -51,6 +51,17 @@
                         Login</a
                     >
                 </li>
+                <li>
+                    <a href="/register" class="hover:text-laravel"
+                        ><i class="fa-solid fa-user-plus"></i> Register</a
+                    >
+                </li>
+                <li>
+                    <a href="/login" class="hover:text-laravel"
+                        ><i class="fa-solid fa-arrow-right-to-bracket"></i>
+                        Login</a
+                    >
+                </li>
             </ul>
         </nav>
 <main>
