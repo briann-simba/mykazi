@@ -30,4 +30,31 @@ return view('users.register');
     Auth::login($user);
     return redirect ("/")->with("message","User created successfully");
     }
+
+
+public function logout(Request $request){
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect("/")->with("message","You have been logged out");
+}
+
+public function login(){
+    return view("users.login");
+}
+
+public function loginCheck(Request $request){
+$formFields=$request->validate([
+    "email"=>["required","email"],
+"password"=>["required"]
+]);
+
+
+if (Auth::attempt(array("email"=>$formFields["email"],"password"=>$formFields["password"]))){ 
+    $request->session()->regenerate();
+return redirect("/")->with("message","Login Success!"); 
+}
+
+return back()->withErrors(['email'=>'Invalid Credentials'])->onlyInput('email');
+}
 }
