@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Listing extends Model
 {
     use HasFactory;
-    protected $fillable = ["title","logo","company","location","email","website","tags","description"];
+    protected $fillable = ["title","logo","company","location","email","website","tags","description","user_id"];
 
     public function scopeFilter($query, array $filters){
 if ($filters['tag'] ?? false){
@@ -23,5 +23,8 @@ if ($filters['search'] ?? false){
 
 }
 
-
+//R/ship with User
+public function user(){
+return $this->belongsTo(User::class,'user_id');
+}
 }

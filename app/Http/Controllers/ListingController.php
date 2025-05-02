@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Listing;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 
@@ -13,7 +14,10 @@ class ListingController extends Controller
 //Show all listings
     public function index(){
         //dd(Listing::latest()->filter(request(["tag","search"]))->paginate(4));
-        $listings=Listing::latest()->filter(request(["tag","search"]))->paginate(4);
+        //$listings=Listing::latest()->filter(request(["tag","search"]))->paginate(4);
+        
+        $listings=Auth::user()->myListings()->latest()->filter(request(["tag","search"]))->paginate(4);
+
         return view('listings.index',["listings"=>$listings]);
     }
 //Show single listing
@@ -41,6 +45,7 @@ class ListingController extends Controller
         if ($request->hasFile('logo')){
             $formFields['logo']=$request->file('logo')->store('logos','public');
         }
+        $formFields['user_id']=Auth::id();
         Listing::create($formFields);
 
         return redirect("/")
