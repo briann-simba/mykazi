@@ -14,9 +14,9 @@ class ListingController extends Controller
 //Show all listings
     public function index(){
         //dd(Listing::latest()->filter(request(["tag","search"]))->paginate(4));
-        //$listings=Listing::latest()->filter(request(["tag","search"]))->paginate(4);
+        $listings=Listing::latest()->filter(request(["tag","search"]))->paginate(4);
         
-        $listings=Auth::user()->myListings()->latest()->filter(request(["tag","search"]))->paginate(4);
+      //  $listings=Auth::user()->myListings()->latest()->filter(request(["tag","search"]))->paginate(4);
 
         return view('listings.index',["listings"=>$listings]);
     }
@@ -59,6 +59,8 @@ class ListingController extends Controller
 
  //Actually Update Listing
 public function update(Request $request, Listing $listing){
+
+    if ($listing->user_id != Auth::id()) abort(403,"User not authorized to update job listing");
     $formFields=$request->validate([
         "title"=>'required',
         "company"=>["required"],
@@ -81,11 +83,20 @@ Storage::disk('public')->delete( $listing->logo );
 $listing->update($formFields);
 return redirect()->route("listings.show",$listing->id)->with('message','Listing Updated Successfully!');
 }
+
+//Delete Listing
 public function destroy(Listing $listing){
+
+    if ($listing->user_id != Auth::id()) abort(403,"User not authorized to delete job listing");
+
     if ($listing->logo && Storage::disk('public')->exists($listing->logo)){
         Storage::disk('public')->delete( $listing->logo );
                 }
                 $listing->delete();
                 return redirect()->route('listings.index')->with('message','Listing deleted successfully!');
+}
+
+public function manage(){
+    return view('listings.manage',['listings'=>Auth::user()->myListings()->get()]);
 }
 }

@@ -7,6 +7,9 @@ use App\Http\Controllers\ListingController;
 //show all listings
 Route::get('/', [ListingController::class,"index"])->name("listings.index");
 
+//manage listing
+Route::get('/listings/manage', action: [ListingController::class,'manage'])->middleware(middleware: 'auth');
+
 //Actually Update Listing
 Route::put("/listings/{listing}", [ListingController::class,"update"])->middleware('auth');
 
